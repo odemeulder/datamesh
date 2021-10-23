@@ -1,0 +1,40 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: odm-datamesh
+  region: us-east-2
+  version: "1.21"
+
+nodeGroups:
+  - name: ng1-datamesh
+    instanceType: m5.xlarge
+    desiredCapacity: 2
+    amiFamily: Bottlerocket
+    iam:
+      withAddonPolicies:
+        cloudWatch: true 
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: aws-load-balancer-controller
+      namespace: kube-system
+    attachPolicyARNs:
+    - "arn:aws:iam::$AWS_ACCOUNT_NUMBER:policy/AWSLoadBalancerControllerIAMPolicy"
+    wellKnownPolicies:
+      awsLoadBalancerController: true
+  - metadata:
+      name: aws-secrets-manager
+      namespace: datamesh
+    attachPolicyARNs:
+    - "arn:aws:iam::$AWS_ACCOUNT_NUMBER:policy/OdmSecretsManagerAccessPolicy"
+  - metadata:
+      name: external-dns
+      namespace: kube-system
+    wellKnownPolicies:
+      externalDNS: true
+    attachPolicyARNs:
+    - "arn:aws:iam::$AWS_ACCOUNT_NUMBER:policy/odm_route53_eks"

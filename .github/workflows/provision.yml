@@ -24,7 +24,8 @@ jobs:
         with: 
           command: |
             if ! eksctl get cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION; then 
-              eksctl create cluster --config-file $GITHUB_WORKSPACE/cluster/cluster.yml          
+              cat $GITHUB_WORKSPACE/cluster/cluster.yml | envsubst > $GITHUB_WORKSPACE/cluster/cluster_updated.yml
+              eksctl create cluster --config-file $GITHUB_WORKSPACE/cluster/cluster_updated.yml          
             fi
 
       - name: Grant permissions for admin user + olivier cli user
