@@ -1,0 +1,71 @@
+name: Provision EKS cluster
+on: workflow_dispatch
+
+env:
+  AWS_REGION: 'us-east-2'                   
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_ACCOUNT_NUMBER: ${{ secrets.AWS_ACCOUNT_NUMBER }}
+  AWS_CONSOLE_USER: ${{secrets.AWS_CONSOLE_USER}}
+  AWS_CLI_USER: ${{secrets.AWS_CLI_USER}}
+  EKS_CLUSTER_NAME: 'odm-datamesh'
+  EKS_CLUSTER_NAMESPACE: 'datamesh'
+
+jobs:
+
+  provision_cluster:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create cluster
+        uses: ./.github/actions/eksctl
+        with: 
+          command: |
+            if ! eksctl get cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION; then 
+              eksctl create cluster --config-file $GITHUB_WORKSPACE/cluster/cluster.yml          
+            fi
+
+      - name: Grant permissions for admin user + olivier cli user
+        uses: ./.github/actions/eksctl
+        with: 
+          command: |
+            if eksctl get cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION; then 
+              eksctl create iamidentitymapping \
+                --cluster $EKS_CLUSTER_NAME \
+                --arn arn:aws:iam::$AWS_ACCOUNT_NUMBER:user/$AWS_ADMIN_USER \
+                --group system:masters \
+                --username $AWS_CONSOLE_USER \
+                --region $AWS_REGION
+              eksctl create iamidentitymapping \
+                --cluster $EKS_CLUSTER_NAME \
+                --arn arn:aws:iam::$AWS_ACCOUNT_NUMBER:user/$AWS_CLI_USER \
+                --group system:masters \
+                --username $AWS_CLI_USER \
+                --region $AWS_REGION
+            fi
+
+  setup_cluster:
+    needs: provision_cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get VPC ID
+        run: |
+          echo "AWS_VPC_ID=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --query 'cluster.resourcesVpcConfig.vpcId' --output text)" >> $GITHUB_ENV
+
+      - name: Update kubeconfig
+        run: |
+          aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+
+      - name: Install CSI driver
+        run: |
+          helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts --force-update
+          if [ $(kubectl get pods -n kube-system -l app=secrets-store-csi-driver --no-headers | wc -l) -eq 0 ]; then
+            helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --namespace kube-system --set syncSecret.enabled=true
+          fi
+
+

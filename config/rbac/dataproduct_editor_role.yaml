@@ -1,0 +1,24 @@
+# permissions for end users to edit dataproducts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dataproduct-editor-role
+rules:
+- apiGroups:
+  - datamesh.demeulder.us
+  resources:
+  - dataproducts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - datamesh.demeulder.us
+  resources:
+  - dataproducts/status
+  verbs:
+  - get

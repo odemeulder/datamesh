@@ -1,0 +1,24 @@
+# permissions for end users to edit inputports3s.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: inputports3-editor-role
+rules:
+- apiGroups:
+  - datamesh.demeulder.us
+  resources:
+  - inputports3s
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - datamesh.demeulder.us
+  resources:
+  - inputports3s/status
+  verbs:
+  - get

@@ -1,0 +1,21 @@
+name: Destroy EKS cluster
+on: workflow_dispatch
+
+env:
+  AWS_REGION: 'us-east-2'                   
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  EKS_CLUSTER_NAME: 'odm-datamesh'
+
+jobs:
+  destroy_cluster:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Destroy cluster
+        uses: ./.github/actions/eksctl
+        with: 
+          command: |
+            eksctl delete cluster --region=$AWS_REGION --name=$EKS_CLUSTER_NAME

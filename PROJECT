@@ -1,0 +1,35 @@
+domain: demeulder.us
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: datamesh
+repo: github.com/odemeulder/datamesh
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: demeulder.us
+  group: datamesh
+  kind: DataProduct
+  path: github.com/odemeulder/datamesh/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: demeulder.us
+  group: datamesh
+  kind: InputPortS3
+  path: github.com/odemeulder/datamesh/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: demeulder.us
+  group: datamesh
+  kind: OutputPortS3
+  path: github.com/odemeulder/datamesh/api/v1
+  version: v1
+version: "3"

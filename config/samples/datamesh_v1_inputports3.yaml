@@ -1,0 +1,7 @@
+apiVersion: datamesh.demeulder.us/v1
+kind: InputPortS3
+metadata:
+  name: inputports3-sample
+spec:
+  # Add fields here
+  foo: bar

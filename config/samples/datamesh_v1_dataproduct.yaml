@@ -1,0 +1,7 @@
+apiVersion: datamesh.demeulder.us/v1
+kind: DataProduct
+metadata:
+  name: dataproduct-sample
+spec:
+  # Add fields here
+  foo: bar

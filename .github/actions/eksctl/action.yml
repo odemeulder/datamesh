@@ -1,0 +1,14 @@
+name: 'eksctl'
+description: 'Runs eksctl cli'
+branding:
+  icon: 'command'
+  color: 'red'
+inputs:
+  command:
+    description: 'eksctl command to run'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.command }}
