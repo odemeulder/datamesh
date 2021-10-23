@@ -1,7 +1,13 @@
 apiVersion: datamesh.demeulder.us/v1
 kind: DataProduct
 metadata:
-  name: dataproduct-sample
+  name: sales-analytics
 spec:
-  # Add fields here
-  foo: bar
+  image: busybox
+  cronexpr: "0 0 0 0 1"
+  inputPorts:
+  - invoices
+  - products
+  outputPorts:
+  - products-analytics
+  size: 1

@@ -28,8 +28,9 @@ type OutputPortS3Spec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of OutputPortS3. Edit outputports3_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	BucketArn  string `json:"bucketArn,omitempty"`
+	ObjectName string `json:"objectName,omitempty"`
+	FileTypem  string `json:"fileType,omitempty"`
 }
 
 // OutputPortS3Status defines the observed state of OutputPortS3

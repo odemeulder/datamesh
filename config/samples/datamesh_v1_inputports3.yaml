@@ -1,7 +1,17 @@
 apiVersion: datamesh.demeulder.us/v1
 kind: InputPortS3
 metadata:
-  name: inputports3-sample
+  name: invoices
 spec:
-  # Add fields here
-  foo: bar
+  bucketArn: arn:aws:s3:::odm-linecount
+  objectName: invoices.csv
+  fileType: csv
+---
+apiVersion: datamesh.demeulder.us/v1
+kind: InputPortS3
+metadata:
+  name: products
+spec:
+  bucketArn: arn:aws:s3:::odm-linecount
+  objectName: products.csv
+  fileType: csv

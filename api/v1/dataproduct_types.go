@@ -25,23 +25,24 @@ import (
 
 // DataProductSpec defines the desired state of DataProduct
 type DataProductSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of DataProduct. Edit dataproduct_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Image       string   `json:"image,omitempty"`
+	Cronexpr    string   `json:"cronexpr,omitempty"`
+	InputPorts  []string `json:"inputPorts,omitempty"`
+	OutputPorts []string `json:"outputPorts,omitempty"`
+	Size        int32    `json:"size,omitempty"`
 }
 
 // DataProductStatus defines the observed state of DataProduct
 type DataProductStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Nodes []string `json:"nodes,omitempty"`
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
 
 // DataProduct is the Schema for the dataproducts API
+//+kubebuilder:subresource:status
 type DataProduct struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

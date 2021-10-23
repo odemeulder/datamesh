@@ -1,7 +1,8 @@
 apiVersion: datamesh.demeulder.us/v1
 kind: OutputPortS3
 metadata:
-  name: outputports3-sample
+  name: product-analytics
 spec:
-  # Add fields here
-  foo: bar
+  bucketArn: arn:aws:s3:::odm-linecount
+  objectName: analytics.csv
+  fileType: csv
